@@ -1,0 +1,184 @@
+/* client/src/pages/AuthPage.css */
+
+.auth-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #ffffff; /* White background for the page */
+    font-family: 'Press Start 2P', cursive;
+    color: #000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.auth-card {
+    background-color: #d8d6d6; /* Light grey background for the card */
+    padding: 30px;
+    border-radius: 0;
+    box-shadow:
+        4px 4px 0px 0px #000, /* Black pixel shadow */
+        8px 8px 0px 0px #888; /* Dark grey pixel shadow */
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: none;
+    position: relative;
+}
+
+.auth-header {
+    margin-bottom: 25px;
+    border-bottom: 2px solid #000; /* Black bottom border for header */
+    padding-bottom: 15px;
+    
+}
+
+.pixel-character-auth {
+    display: none; /* Ensures no small image is displayed */
+}
+
+.auth-header h2 {
+    font-size: 1.8em;
+    color: #000;
+    margin-bottom: 5px;
+    letter-spacing: 0;
+    text-shadow: 2px 2px #555; /* Text shadow for header */
+}
+
+.auth-header p {
+    
+    color: #000;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.form-group {
+    
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    
+    display: block;
+    margin-bottom: 5px;
+    color: #000;
+    font-weight: normal;
+    font-size: 0.8em;
+}
+
+.form-group input {
+    width: calc(100% - 10px); /* Adjusts for padding */
+    padding: 8px 5px;
+    border: 2px solid #000; /* Black border for inputs */
+    border-radius: 0;
+    font-size: 0.9em;
+    background-color: #F8F8F8; /* Very light grey input background */
+    color: #000;
+    transition: none;
+    box-shadow: 1px 1px 0px 0px #555; /* Small input shadow */
+}
+
+.form-group input:focus {
+    border-color: #000;
+    outline: none;
+    box-shadow: 2px 2px 0px 0px #000; /* Darker shadow on focus */
+}
+
+.auth-button {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #A0A0A0; /* Medium grey button background */
+    color: #000;
+    border: 2px solid #000; /* Black border for buttons */
+    border-radius: 0;
+    font-size: 0.9em;
+    font-weight: normal;
+    cursor: pointer;
+    transition: none;
+    margin-top: 15px;
+    box-shadow: 3px 3px 0px 0px #000; /* Button pixel shadow */
+}
+
+.auth-button:hover:not(:disabled) {
+    background-color: #B0B0B0; /* Lighter grey on hover */
+    box-shadow: 2px 2px 0px 0px #000; /* Slightly reduced shadow on hover */
+}
+
+.auth-button:disabled {
+    background-color: #C0C0C0; /* Lighter grey when disabled */
+    cursor: not-allowed;
+    opacity: 0.8;
+    box-shadow: 1px 1px 0px 0px #000; /* Smallest shadow when disabled */
+}
+
+.auth-facebook-button {
+    background-color: #606060; /* Darker grey for Facebook button */
+    margin-top: 10px;
+}
+
+.auth-facebook-button:hover:not(:disabled) {
+    background-color: #707070; /* Slightly lighter on hover */
+}
+
+.error-message {
+    color: #FF0000; /* Red for errors */
+    margin-top: 15px;
+    font-size: 0.8em;
+    text-shadow: 1px 1px #555;
+}
+
+.success-message {
+    color: #080808; /* Very dark grey/almost black for success */
+    margin-top: 15px;
+    font-size: 0.8em;
+    text-shadow: 1px 1px #555;
+}
+
+.auth-footer-links {
+    margin-top: 25px;
+    font-size: 0.75em;
+    color: #000;
+}
+
+.auth-footer-links p {
+    margin-bottom: 8px;
+}
+
+.auth-footer-links a {
+    color: #000;
+    text-decoration: underline;
+    font-weight: normal;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+}
+
+.auth-footer-links a:hover {
+    color: #555;
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .auth-card {
+        max-width: 95%;
+        padding: 25px;
+        box-shadow: 2px 2px 0px 0px #000, 4px 4px 0px 0px #888;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 20px;
+    }
+
+    .auth-header h2 {
+        font-size: 1.5em;
+    }
+
+    .form-group input,
+    .auth-button {
+        font-size: 0.8em;
+        padding: 10px 12px;
+    }
+}

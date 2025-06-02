@@ -1,0 +1,297 @@
+/* src/pages/IdeaList.css
+
+/* Overall Page Background and Base Font */
+body {
+    background-color: #ffffff; /* Very dark gray/almost black background as in image */
+    margin: 0;
+    padding: 0;
+    /* Main font for general text, fallback to Arial */
+    font-family: 'Arial', sans-serif;
+}
+
+/* IMPORTANT: If you want the 'Press Start 2P' pixel font, add this to your public/index.html <head> */
+/* <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> */
+
+
+/* Main page container for content */
+.idea-list-page-container {
+    padding: 30px 20px; /* Padding around content */
+    max-width: 1000px; /* Max width to contain 3 cards + gaps */
+    margin: 40px auto; /* Center on page */
+    background-color: #f0f0f0; /* Light background for the content area */
+    border-radius: 0; /* No border-radius for the flat look */
+    box-shadow: none; /* No soft shadow */
+    text-align: center;
+    color: #333;
+}
+
+.idea-list-page-container h1 {
+    font-size: 3em; /* SIGNIFICANTLY LARGER HEADER */
+    color: #050505; /* White header text on dark background */
+    /* background-color: #dfbcbc; Dark background for header */
+    padding: 15px 20px;
+    margin-bottom: 40px;
+    text-shadow: none; /* No text shadow */
+    /* border: 3px solid #000; Solid border around header */
+    display: inline-block; /* To make border fit content */
+    font-family: 'Press Start 2P', cursive; /* Apply pixel font to header */
+    letter-spacing: 2px; /* Add some spacing for pixel font */
+}
+
+/* Messages */
+.loading-message, .error-message, .no-ideas-message {
+    font-size: 1.2em;
+    color: #555;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #989292;
+    border-radius: 0; /* Flat */
+    border: 3px solid #000; /* Solid border */
+    font-family: 'Arial', sans-serif; /* Ensure readable font */
+}
+
+.error-message {
+    color: #d9534f;
+    background-color: #f8d7da;
+    border-color: #000; /* Flat border */
+}
+
+/* Flex container for the cards: Ensures 3 cards per row exactly */
+.ideas-display-flex {
+    display: flex;
+    flex-wrap: wrap; /* Allows cards to wrap if more than 3 */
+    justify-content: center; /* Center the rows of cards */
+    gap: 20px; /* Gap between cards */
+    margin-top: 20px;
+    /* This max-width (3*card-width + 2*gap) ensures 3 cards fit perfectly */
+    max-width: calc(280px * 3 + 20px * 2); /* 3 cards * 280px + 2 gaps * 20px */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Individual Idea Card Wrapper (Link) --- */
+.idea-card-link-wrapper {
+    text-decoration: none;
+    color: inherit;
+    /* Fixed width and height for each card to ensure consistent size as per image */
+    width: 280px; /* Exact width of a single card in the image */
+    height: 380px; /* Exact height of a single card in the image */
+    flex-shrink: 0; /* Prevents cards from shrinking */
+    flex-grow: 0; /* Prevents cards from growing */
+    position: relative;
+    box-sizing: border-box; /* Ensure padding/border included in width/height */
+}
+
+/* --- Inner Idea Card Styling (the actual card content) --- */
+.idea-card {
+    background-color: #fefefe; /* Card background, almost white */
+    border: 3px solid #000; /* Main thick black border */
+    border-radius: 0; /* No border-radius for flat look */
+    overflow: hidden;
+    /* Flat offset shadow */
+    box-shadow: 6px 6px 0px 0px #000;
+    transition: transform 0.1s ease, box-shadow 0.1s ease; /* Faster transition */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Make inner card fill its link wrapper */
+    position: relative;
+}
+
+.idea-card:hover {
+    transform: translate(-3px, -3px); /* Shift up-left slightly */
+    box-shadow: 9px 9px 0px 0px #000; /* Deeper shadow on hover */
+}
+
+/* --- Card Sections --- */
+
+.card-top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 8px 15px; /* Adjust padding to match image */
+    background-color: #d8dee9; /* Light grayish-blue from image */
+    border-bottom: 3px solid #000; /* Sharp black border below */
+    box-sizing: border-box;
+}
+
+.card-title-text {
+    font-size: 1.2em; /* Adjusted title font size for readability */
+    font-weight: bold;
+    color: #000000; /* Dark blue/almost black from image */
+    text-transform: uppercase;
+    text-align: left;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1; /* Tighter line height */
+    font-family: 'Press Start 2P', cursive; /* Apply pixel font to card title */
+    letter-spacing: 1px;
+}
+
+/* New styling for the creator's name (top right) */
+.card-creator-name {
+    font-size: 0.85em; /* Smaller than title, but readable */
+    color: #555; /* Slightly lighter color */
+    font-weight: normal;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 10px; /* Give some space from the title */
+    font-family: 'Arial', sans-serif; /* Use a clear sans-serif for names */
+}
+
+.card-image-section {
+    position: relative;
+    width: 100%;
+    height: 290px; /* Adjusted height to fill space more and match original image aspect */
+    background-color: #ffffff; /* Light blue from image */
+    border-bottom: 3px solid #000; /* Sharp black border below */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.card-cartoon-image {
+    max-width: 90%; /* Adjust size of the bear */
+    max-height: 90%;
+    object-fit: contain;
+    image-rendering: pixelated; /* Crucial for pixel art */
+    filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5)); /* Stronger shadow for character */
+}
+
+/* Placeholder for NO.XXX */
+.card-number-placeholder {
+    position: absolute;
+    bottom: 8px; /* Distance from the bottom of the image section */
+    right: 8px; /* Distance from the right of the image section */
+    background-color: #fff;
+    border: 3px solid #000;
+    padding: 4px 10px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #333;
+    border-radius: 0;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    font-family: 'Arial', sans-serif; /* Use Arial for numbers */
+}
+
+
+/* --- Bottom Stats/Info Bar --- */
+.card-stats-bar {
+    display: flex;
+    justify-content: space-between; /* Space out "TANG'S WORLD" (now creator's name) and interest display */
+    align-items: center;
+    width: 100%;
+    padding: 10px 15px; /* Padding for the bar itself */
+    background-color: #979796; /* Bright yellow from image */
+    box-sizing: border-box;
+    flex-grow: 1; /* Allows this section to take up remaining height */
+    min-height: 50px; /* Ensure minimum height for content */
+}
+
+/* Styling for the creator's name in the bottom bar (replaces TANG'S WORLD) */
+.stat-item {
+    font-size: 0.9em; /* Keep original size for consistency */
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase; /* Ensure it's uppercase like TANG'S WORLD was */
+    letter-spacing: 0.5px;
+    font-family: 'Press Start 2P', cursive; /* Apply pixel font to the name here */
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis if text is too long */
+    max-width: calc(100% - 80px); /* Limit width to leave space for interest display */
+}
+
+.interest-display {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Smaller gap between thumbs up and count */
+}
+
+.thumbs-up-button {
+    background: none;
+    border: none;
+    font-size: 1.3em; /* Size of the thumbs up emoji */
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    padding: 0;
+    line-height: 1;
+    z-index: 10;
+}
+
+.thumbs-up-button:hover {
+    transform: scale(1.15);
+}
+
+.interest-count {
+    font-size: 1em;
+    font-weight: bold;
+    color: #000;
+    font-family: 'Arial', sans-serif; /* Use Arial for numbers */
+}
+
+/* Back button styling */
+.back-button {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 25px;
+    border: 3px solid #000;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-top: 40px;
+    transition: background-color 0.2s ease, box-shadow 0.1s ease;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.7);
+    font-family: 'Press Start 2P', cursive; /* Apply pixel font to button */
+    letter-spacing: 1px;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 950px) {
+    .ideas-display-flex {
+        max-width: calc(280px * 2 + 20px * 1);
+    }
+    .idea-list-page-container h1 {
+        font-size: 2.5em; /* Adjust header for 2 columns */
+    }
+}
+
+@media (max-width: 650px) {
+    .ideas-display-flex {
+        max-width: 280px;
+    }
+    .idea-list-page-container h1 {
+        font-size: 2em; /* Adjust header for 1 column */
+        padding: 10px 15px;
+    }
+    .idea-card-link-wrapper {
+        width: 250px;
+        height: 350px;
+    }
+    .card-image-section {
+        height: 250px;
+    }
+    .thumbs-up-button {
+        font-size: 1.2em;
+    }
+    .interest-count {
+        font-size: 0.9em;
+    }
+    /* Adjust stat-item for smaller screens if needed */
+    .stat-item {
+        max-width: calc(100% - 60px); /* Adjust max-width slightly for smaller screens */
+    }
+} 

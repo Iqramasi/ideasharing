@@ -1,0 +1,157 @@
+
+.home-container {
+  background-color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Rubik Glitch', cursive;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  
+  align-items: center;      /* horizontal centering */
+  text-align: center;
+}
+
+.home-title {
+  font-family: 'Press Start 2P', cursive;
+}
+
+
+.home-button {
+  padding: 14px 30px;
+  font-size: 18px;
+  background-color: #080706;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.home-button:hover {
+  background-color: #151514;
+}
+
+.bear-footer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 0px;
+  width: 170%;
+  padding: 0px;
+  background: #f0f0f0;
+  border-top: 0px solid #f0f0f0;
+}
+
+.bear-img {
+  height: 130px;
+  object-fit: contain;
+}
+
+
+
+/* --- Dropdown Menu Styles --- */
+
+.dropdown-menu-container {
+    position: absolute; /* Positions the dropdown relative to the nearest positioned ancestor (body or home-container) */
+    top: 20px;          /* Distance from the top of the page */
+    left: 20px;         /* Distance from the left of the page (as per your last request for left alignment) */
+    z-index: 1000;      /* Ensures the dropdown appears on top of other content */
+}
+
+.hamburger-icon {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Distributes space evenly between the bars */
+    cursor: pointer;
+    padding: 5px; /* Adds a bit of padding around the icon for easier clicking */
+}
+
+.hamburger-icon .bar {
+    width: 100%;
+    height: 3px;
+    background-color: #333; /* Color of the three lines */
+    border-radius: 2px;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.hamburger-icon:hover .bar {
+    background-color: #010101; /* Color when hovering over the hamburger icon */
+}
+
+/* Consolidated and Corrected Dropdown Content Styles */
+.dropdown-content {
+    display: flex; /* Use flexbox to stack buttons */
+    flex-direction: column; /* Stack buttons vertically */
+    position: absolute;
+    background-color: transparent; /* Make the background transparent */
+    border: none; /* Remove any border */
+    box-shadow: none; /* Remove any box shadow */
+    z-index: 1;
+    border-radius: 0; /* Remove border-radius if you want sharp edges around buttons */
+    padding: 0; /* REMOVED ALL PADDING from the container */
+    left: 0; /* Align dropdown with the hamburger icon */
+    top: 50px; /* Position below the hamburger icon */
+    min-width: 150px; /* Set a min-width to comfortably fit the longest button text.
+                       You might need to fine-tune this value (e.g., 140px, 160px)
+                       depending on the exact font rendering and text length. */
+    overflow: hidden; /* Ensures content respects container boundaries if any */
+    animation: fadeIn 0.3s ease-out; /* Keep the fade-in animation */
+}
+
+/* Consolidated and Corrected Dropdown Button Styles */
+.dropdown-content button {
+    background-color: #060707; /* Your desired black background for buttons */
+    color: white; /* White text color */
+    border: none; /* Remove button borders */
+    padding: 10px 15px; /* Padding for text inside the buttons */
+    text-align: left; /* Align text to the left */
+    cursor: pointer;
+    font-size: 0.95em; /* Consistent font size */
+    width: 100%; /* Make buttons fill the entire width of the dropdown content */
+    margin: 0; /* REMOVE ALL MARGINS to make them flush */
+    border-radius: 0; /* Remove button border-radius for sharp corners */
+    transition: background-color 0.2s ease; /* Smooth transition for hover */
+    font-family: 'Press Start 2P', cursive; /* Apply the pixel font */
+    box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+.dropdown-content button:hover {
+    background-color: #0c0c0c; /* Slightly lighter black on hover */
+}
+
+/* Specific logout button style (if needed, ensure it overrides general button styles) */
+.logout-button {
+    /* If you want logout to be a different color, define it here.
+       Otherwise, it will inherit the .dropdown-content button styles. */
+    /* Example: background-color: #dc3545; */
+}
+
+.logout-button:hover {
+    /* Example: background-color: #c82333; */
+}
+
+/* Your existing .home-container, .content, .home-title, .home-button,
+   .bear-footer, .bear-img, .welcome-message, and @keyframes fadeIn
+   styles should remain as they are. */
+
+/* Ensure the welcome message font is also consistent if desired */
+.welcome-message {
+    font-size: 1.2em;
+    color: #0b0b0b;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-family: 'Press Start 2P', cursive; /* Applied here as well */
+}
