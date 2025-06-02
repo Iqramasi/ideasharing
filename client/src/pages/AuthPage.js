@@ -17,8 +17,9 @@ function AuthPage() {
 
     const navigate = useNavigate();
 
-    // The image variable is no longer needed if the image is removed
-    // const pixelCharacterImage = '/bears/bear14.png';
+    // Define API_BASE_URL once at the top,
+    // ensuring it's always read from the environment variable.
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,10 +31,14 @@ function AuthPage() {
         setError(null);
         setSuccessMessage(null);
 
-        const url = isLogin ? 'http://localhost:5000/api/auth/login' : 'http://localhost:5000/api/auth/register';
+        const url = isLogin ? `${API_BASE_URL}/api/auth/login` : `${API_BASE_URL}/api/auth/register`;
+
+        console.log("Attempting API call to:", url);
+        console.log("Sending data:", formData); // Be careful not to log passwords in production!
 
         try {
             const res = await axios.post(url, formData);
+            console.log("API call successful! Response:", res.data);
 
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -44,7 +49,9 @@ function AuthPage() {
             }, 1500);
 
         } catch (err) {
-            console.error("Auth error:", err.response?.data?.message || err.message);
+            console.error("API call FAILED! Error details:", err);
+            console.error("Error response data:", err.response?.data);
+            console.error("Error message:", err.message);
             setError(err.response?.data?.message || 'Authentication failed.');
         } finally {
             setLoading(false);
@@ -53,12 +60,8 @@ function AuthPage() {
 
     return (
         <div className="auth-page-container">
-            {/* The auth-character-display div is removed */}
-
             <div className="auth-card">
                 <div className="auth-header">
-                    {/* Re-add a small bear icon if you want one inside the card, or keep it removed */}
-                    {/* For now, I'm keeping it simple without the small image. */}
                     <h2>SHARE IDEA</h2>
                     <p>{isLogin ? 'Log in to check out ideas ' : 'Hi!'}</p>
                 </div>
@@ -116,18 +119,14 @@ function AuthPage() {
                         {loading ? 'Processing...' : (isLogin ? 'LOGIN WITH EMAIL' : 'SIGN UP')}
                     </button>
 
-                   
-
                     <div className="auth-footer-links">
                         {isLogin ? (
                             <React.Fragment>
-                                
                                 <p>Didn't have an account ? <a href="#" onClick={() => { setIsLogin(false); setError(null); setSuccessMessage(null); }}>Sign Up</a></p>
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
                                 <p>Already have an account ? <a href="#" onClick={() => { setIsLogin(true); setError(null); setSuccessMessage(null); }}>Log In</a></p>
-                                
                             </React.Fragment>
                         )}
                     </div>

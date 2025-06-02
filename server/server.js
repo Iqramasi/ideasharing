@@ -13,6 +13,49 @@ const PORT = process.env.PORT || 5000;
 app.use(cors()); // Enable CORS for all routes (important for frontend communication)
 app.use(express.json()); // Body parser for JSON request bodies
 
+// server.js (part of your backend CORS configuration)
+
+// ... (other code)
+
+
+
+// Vercel Frontend URL(s) - DOUBLE-CHECK THESE VALUES ARE EXACT!
+const VERCEL_FRONTEND_URL = 'https://ideasharing-flaq.vercel.app'; // <--- REPLACE THIS WITH YOUR ACTUAL VERIFIED VERCEL URL
+// Example: https://share-idea-app.vercel.app
+const VERCEL_PREVIEW_URL_PATTERN = /^https:\/\/share-idea-app-git-[a-zA-Z0-9-]+-[a-zA-Z0-9-]+\.vercel\.app$/; // <--- ADJUST THIS REGEX!
+// To verify your pattern, deploy a branch on Vercel, copy its URL, and test it against this regex in a tool like regex101.com
+// Also, ensure 'yourusername' matches your Vercel username if it's part of the pattern.
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        // --- ADD MORE LOGGING HERE ---
+        console.log(`CORS Check: Request Origin -> ${origin}`);
+        console.log(`Expected VERCEL_FRONTEND_URL -> ${VERCEL_FRONTEND_URL}`);
+        console.log(`Matching VERCEL_PREVIEW_URL_PATTERN -> ${VERCEL_PREVIEW_URL_PATTERN.test(origin)}`);
+
+        if (!origin ||
+            origin === VERCEL_FRONTEND_URL ||
+            VERCEL_PREVIEW_URL_PATTERN.test(origin) ||
+            origin === 'http://localhost:3000' // For local frontend development
+        ) {
+            console.log(`CORS: Origin ${origin} is ALLOWED.`);
+            callback(null, true);
+        } else {
+            console.warn(`CORS: Blocking request from origin: ${origin}.`);
+            callback(new Error(`Not allowed by CORS: ${origin}`), false);
+        }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Content-Type,Authorization,x-auth-token',
+};
+app.use(cors(corsOptions));
+
+// ... (rest of server.js)
+
+
+
+
 // --- MongoDB Connection ---
 // Ensure process.env.MONGO_URI is set in your .env file
 mongoose.connect(process.env.MONGO_URI, {
