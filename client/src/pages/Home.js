@@ -68,7 +68,7 @@ const Home = () => {
           <div className="dropdown-content">
             <button onClick={() => handleNavigation("/interest")}>Show Interest</button>
             <button onClick={() => handleNavigation("/submit")}>Submit Idea</button>
-            <button onClick={() => handleNavigation("/contact")}>Contact Us</button>
+            {/* <button onClick={() => handleNavigation("/contact")}>Contact Us</button> */}
             <button onClick={handleLogout} className="logout-button">Logout</button> {/* Added Logout Button */}
           </div>
         )}
