@@ -206,9 +206,9 @@ const JWT_SECRET = process.env.JWT_SECRET; // Use a strong, random string in pro
 
 // Vercel Frontend URL(s) - REPLACE WITH YOUR ACTUAL VERCEL DEPLOYMENT URL(S)
 // Get your Vercel production domain from your Vercel project settings.
-const VERCEL_FRONTEND_URL = 'https://your-vercel-frontend-app.vercel.app'; // e.g., https://share-idea-app.vercel.app
+const VERCEL_FRONTEND_URL = 'https://ideasharing-flaq.vercel.app'; // e.g., https://share-idea-app.vercel.app
 // If you use Vercel preview deployments, you might want to allow a pattern for them too:
-const VERCEL_PREVIEW_URL_PATTERN = /^https:\/\/your-vercel-frontend-app-git-[a-zA-Z0-9-]+-yourusername\.vercel\.app$/; // Adjust this regex to match your specific Vercel preview URLs
+const VERCEL_PREVIEW_URL_PATTERN = /^https:\/\/ideasharing-flaq-git-[a-zA-Z0-9-]+-yourusername\.vercel\.app$/; // Adjust this regex to match your specific Vercel preview URLs
 
 // --- 3. Middleware ---
 
