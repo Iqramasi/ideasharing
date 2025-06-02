@@ -19,12 +19,19 @@ app.use(express.json()); // Body parser for JSON request bodies
 
 
 
-// Vercel Frontend URL(s) - DOUBLE-CHECK THESE VALUES ARE EXACT!
-const VERCEL_FRONTEND_URL = 'https://ideasharing-flaq.vercel.app'; // <--- REPLACE THIS WITH YOUR ACTUAL VERIFIED VERCEL URL
-// Example: https://share-idea-app.vercel.app
-const VERCEL_PREVIEW_URL_PATTERN = /^https:\/\/share-idea-app-git-[a-zA-Z0-9-]+-[a-zA-Z0-9-]+\.vercel\.app$/; // <--- ADJUST THIS REGEX!
-// To verify your pattern, deploy a branch on Vercel, copy its URL, and test it against this regex in a tool like regex101.com
-// Also, ensure 'yourusername' matches your Vercel username if it's part of the pattern.
+// // Vercel Frontend URL(s) - DOUBLE-CHECK THESE VALUES ARE EXACT!
+// const VERCEL_FRONTEND_URL = 'https://ideasharing-flaq.vercel.app'; // <--- REPLACE THIS WITH YOUR ACTUAL VERIFIED VERCEL URL
+// // Example: https://share-idea-app.vercel.app
+// const VERCEL_PREVIEW_URL_PATTERN = /^https:\/\/share-idea-app-git-[a-zA-Z0-9-]+-[a-zA-Z0-9-]+\.vercel\.app$/; // <--- ADJUST THIS REGEX!
+// // To verify your pattern, deploy a branch on Vercel, copy its URL, and test it against this regex in a tool like regex101.com
+// // Also, ensure 'yourusername' matches your Vercel username if it's part of the pattern.
+
+// My Code:
+const VERCEL_FRONTEND_URL = process.env.VERCEL_FRONTEND_URL || 'https://ideasharing-flaq.vercel.app'; // <--- UPDATE THIS!
+const VERCEL_PREVIEW_URL_PATTERN = new RegExp(
+    process.env.VERCEL_PREVIEW_URL_PATTERN || '^https:\/\/ideasharing-flaq-git-[a-zA-Z0-9-]+-[a-zA-Z0-9-]+\.vercel\.app$' // <--- UPDATE THIS REGEX!
+);
+
 
 const corsOptions = {
     origin: function (origin, callback) {
