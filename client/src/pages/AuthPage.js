@@ -17,9 +17,11 @@ function AuthPage() {
 
     const navigate = useNavigate();
 
-    // Define API_BASE_URL once at the top,
-    // ensuring it's always read from the environment variable.
+    // *** IMPORTANT CHANGE: Define API_BASE_URL here ***
+    // This will be populated from your Vercel environment variables.
+    // The || 'http://localhost:5000' part is a fallback for local development.
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,14 +33,11 @@ function AuthPage() {
         setError(null);
         setSuccessMessage(null);
 
+        // *** IMPORTANT CHANGE: Use API_BASE_URL for constructing the URL ***
         const url = isLogin ? `${API_BASE_URL}/api/auth/login` : `${API_BASE_URL}/api/auth/register`;
-
-        console.log("Attempting API call to:", url);
-        console.log("Sending data:", formData); // Be careful not to log passwords in production!
 
         try {
             const res = await axios.post(url, formData);
-            console.log("API call successful! Response:", res.data);
 
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -49,9 +48,7 @@ function AuthPage() {
             }, 1500);
 
         } catch (err) {
-            console.error("API call FAILED! Error details:", err);
-            console.error("Error response data:", err.response?.data);
-            console.error("Error message:", err.message);
+            console.error("Auth error:", err.response?.data?.message || err.message);
             setError(err.response?.data?.message || 'Authentication failed.');
         } finally {
             setLoading(false);

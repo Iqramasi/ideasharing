@@ -1,8 +1,10 @@
 
-// module.exports = router;
+
+
+
 const express = require('express');
 const router = express.Router();
-const Idea = require('../models/Idea');
+const Idea = require('../models/Idea'); // Ensure the path to your Idea model is correct
 
 // --- API Endpoints for /api/ideas ---
 
@@ -12,7 +14,6 @@ const Idea = require('../models/Idea');
 router.get('/', async (req, res) => {
     try {
         // Fetch all documents from the 'ideas' collection, sorted by most recent first
-        // This ensures new ideas are at the top.
         const ideas = await Idea.find().sort({ createdAt: -1 });
         res.status(200).json(ideas);
     } catch (err) {
@@ -23,9 +24,9 @@ router.get('/', async (req, res) => {
 
 // @route   POST /api/ideas/submit
 // @desc    Submit a new idea
-// @access  Public
+// @access  Public (or Protected, depending on your auth middleware setup)
 router.post('/submit', async (req, res) => {
-    const { title, description, submittedBy, qrCodeUrl, cartoonImageUrl, cardNumber } = req.body;
+    const { title, description, submittedBy, submittedByEmail } = req.body; // Added submittedByEmail for potential future use
 
     if (!title || !description || !submittedBy) {
         return res.status(400).json({ message: 'Title, description, and your name are required fields.' });
@@ -36,16 +37,15 @@ router.post('/submit', async (req, res) => {
             title,
             description,
             submittedBy,
-            interestCount: 1, // <--- NEW: Initialize interestCount to 1 here
-            qrCodeUrl: qrCodeUrl || '',
-            cartoonImageUrl: cartoonImageUrl || '',
-            cardNumber: cardNumber || ''
+            submittedByEmail: submittedByEmail || '', // Store email if provided
+            interestCount: 0, // Initialize interestCount to 0 for a new idea
         });
 
         const savedIdea = await newIdea.save();
+        console.log("New idea saved:", savedIdea); // Log the saved idea for debugging
         res.status(201).json({
             message: 'Idea submitted successfully!',
-            ideaId: savedIdea._id
+            ideaId: savedIdea._id // This is crucial for your QR code generation on the frontend
         });
     } catch (err) {
         console.error("Error submitting idea:", err);
@@ -84,12 +84,12 @@ router.post('/:id/interest', async (req, res) => {
         if (!idea) {
             return res.status(404).json({ message: 'Idea not found.' });
         }
-        idea.interestCount++;
-        await idea.save();
+        idea.interestCount++; // Increment the count
+        await idea.save(); // Save the updated idea
         res.status(200).json({
             success: true,
             message: 'Interest registered successfully!',
-            interestCount: idea.interestCount
+            interestCount: idea.interestCount // Return the new count
         });
     } catch (err) {
         console.error(`Error registering interest for ID ${req.params.id}:`, err);
@@ -101,4 +101,3 @@ router.post('/:id/interest', async (req, res) => {
 });
 
 module.exports = router;
-
