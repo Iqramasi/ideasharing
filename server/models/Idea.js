@@ -1,46 +1,4 @@
 
-// const mongoose = require('mongoose');
-
-// const IdeaSchema = new mongoose.Schema({
-//     title: {
-//         type: String,
-//         required: true
-//     },
-//     description: {
-//         type: String,
-//         required: true
-//     },
-//     // This 'submittedBy' field must match the name you're sending from the frontend
-//     submittedBy: {
-//         type: String,
-//         required: true
-//     },
-//     interestCount: {
-//         type: Number,
-//         default: 0 // Initialize to 0, as you're incrementing it in the backend
-//     },
-//     // These fields are included in your backend, make sure they are in the schema
-//     qrCodeUrl: {
-//         type: String,
-//         default: ''
-//     },
-//     cartoonImageUrl: {
-//         type: String,
-//         default: ''
-//     },
-//     cardNumber: {
-//         type: String,
-//         default: ''
-//     },
-//     createdAt: { // Useful for sorting ideas by submission time
-//         type: Date,
-//         default: Date.now
-//     }
-// });
-
-// module.exports = mongoose.model('Idea', IdeaSchema);
-
-
 
 
 const mongoose = require('mongoose');
