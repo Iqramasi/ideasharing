@@ -1,237 +1,780 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const bcrypt = require('bcryptjs'); // For password hashing
-const jwt = require('jsonwebtoken'); // For JSON Web Tokens
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// --- Middleware ---
-app.use(cors()); // Enable CORS for all routes (important for frontend communication)
-app.use(express.json()); // Body parser for JSON request bodies
+const mongoose = require('mongoose');
 
-// server.js (part of your backend CORS configuration)
+const cors = require('cors');
 
-// ... (other code)
+const bcrypt = require('bcryptjs');
 
+const jwt = require('jsonwebtoken');
 
+const sendEmail =
+require('./utils/sendEmail');
 
-// // Vercel Frontend URL(s) - DOUBLE-CHECK THESE VALUES ARE EXACT!
-// const VERCEL_FRONTEND_URL = 'https://ideasharing-flaq.vercel.app'; // <--- REPLACE THIS WITH YOUR ACTUAL VERIFIED VERCEL URL
-// // Example: https://share-idea-app.vercel.app
-// const VERCEL_PREVIEW_URL_PATTERN = /^https:\/\/share-idea-app-git-[a-zA-Z0-9-]+-[a-zA-Z0-9-]+\.vercel\.app$/; // <--- ADJUST THIS REGEX!
-// // To verify your pattern, deploy a branch on Vercel, copy its URL, and test it against this regex in a tool like regex101.com
-// // Also, ensure 'yourusername' matches your Vercel username if it's part of the pattern.
+const User =
+require('./models/User');
 
-// My Code:
-const VERCEL_FRONTEND_URL = process.env.VERCEL_FRONTEND_URL || 'https://ideasharing-flaq.vercel.app'; // <--- UPDATE THIS!
-const VERCEL_PREVIEW_URL_PATTERN = new RegExp(
-    process.env.VERCEL_PREVIEW_URL_PATTERN || '^https:\/\/ideasharing-flaq-git-[a-zA-Z0-9-]+-[a-zA-Z0-9-]+\.vercel\.app$' // <--- UPDATE THIS REGEX!
-);
+const ideaRoutes =
+require('./routes/ideaRoutes');
 
 
-const corsOptions = {
-    origin: function (origin, callback) {
-        // --- ADD MORE LOGGING HERE ---
-        console.log(`CORS Check: Request Origin -> ${origin}`);
-        console.log(`Expected VERCEL_FRONTEND_URL -> ${VERCEL_FRONTEND_URL}`);
-        console.log(`Matching VERCEL_PREVIEW_URL_PATTERN -> ${VERCEL_PREVIEW_URL_PATTERN.test(origin)}`);
 
-        if (!origin ||
-            origin === VERCEL_FRONTEND_URL ||
-            VERCEL_PREVIEW_URL_PATTERN.test(origin) ||
-            origin === 'http://localhost:3000' // For local frontend development
-        ) {
-            console.log(`CORS: Origin ${origin} is ALLOWED.`);
-            callback(null, true);
-        } else {
-            console.warn(`CORS: Blocking request from origin: ${origin}.`);
-            callback(new Error(`Not allowed by CORS: ${origin}`), false);
-        }
-    },
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+
+
+// PORT
+
+const PORT =
+process.env.PORT || 5000;
+// ===============================
+// MIDDLEWARE
+// ===============================
+
+app.use(express.json());
+
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'https://ideasharing-flaq.vercel.app'
+    ],
+
+    methods: [
+        'GET',
+        'POST',
+        'PUT',
+        'DELETE'
+    ],
+
     credentials: true,
-    allowedHeaders: 'Content-Type,Authorization,x-auth-token',
-};
-app.use(cors(corsOptions));
 
-// ... (rest of server.js)
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'x-auth-token'
+    ]
+}));
 
 
 
 
-// --- MongoDB Connection ---
-// Ensure process.env.MONGO_URI is set in your .env file
-mongoose.connect(process.env.MONGO_URI, {
-    // The following options are deprecated and no longer necessary in recent Mongoose versions.
-    // Keeping them might lead to warnings, so it's better to remove them.
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true
+
+
+// ===============================
+// MONGODB CONNECTION
+// ===============================
+
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+    console.log('MongoDB connected successfully!');
 })
-.then(() => console.log('MongoDB connected successfully!'))
-.catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1); // Exit process with failure if DB connection fails
+.catch((err) => {
+    console.log(err);
 });
 
-// --- In-Memory "Database" for Users ---
-// IMPORTANT: In a real production application, you would store users in MongoDB
-// by creating a Mongoose User Schema and Model. This in-memory array will reset
-// every time the server restarts, so new registrations will be lost.
-let users = []; // Stores user objects: { id, name, email, password (hashed) }
-let nextUserId = 1; // Simple ID counter for in-memory users
 
-// --- JWT Secret ---
-// Get a strong, random secret from your .env file.
-// You can generate one with: require('crypto').randomBytes(64).toString('hex')
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-    console.error("FATAL ERROR: JWT_SECRET is not defined in .env file!");
-    process.exit(1); // Exit if secret is missing
+
+
+
+
+// ===============================
+// JWT SECRET CHECK
+// ===============================
+
+if (!process.env.JWT_SECRET) {
+
+    console.error(
+        'JWT_SECRET missing in .env'
+    );
+
+    process.exit(1);
 }
 
-// ===========================================
-//  AUTHENTICATION ROUTES (/api/auth/...)
-// ===========================================
 
-// @route   POST /api/auth/register
-// @desc    Register a new user
-// @access  Public
+
+
+
+
+// // ===============================
+// // REGISTER ROUTE
+// // ===============================
+
+// app.post('/api/auth/register', async (req, res) => {
+
+//     try {
+
+//         const {
+//             name,
+//             email,
+//             password
+//         } = req.body;
+
+
+
+
+
+//         // REQUIRED FIELDS
+
+//         if (!name || !email || !password) {
+
+//             return res.status(400).json({
+//                 message:
+//                 'Please fill all fields.'
+//             });
+//         }
+
+
+
+
+
+//         // EMAIL VALIDATION
+
+//         const emailRegex =
+//         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+//         if (!emailRegex.test(email)) {
+
+//             return res.status(400).json({
+//                 message:
+//                 'Please enter valid email.'
+//             });
+//         }
+
+
+
+
+
+//         // PASSWORD VALIDATION
+
+//         const passwordRegex =
+//         /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+//         if (!passwordRegex.test(password)) {
+
+//             return res.status(400).json({
+//                 message:
+//                 'Password must contain uppercase, number, special character and minimum 8 characters.'
+//             });
+//         }
+
+
+
+
+
+
+//         // CHECK EXISTING USER
+
+//         const existingUser =
+//         await User.findOne({
+//             email
+//         });
+
+//         if (existingUser) {
+
+//             return res.status(400).json({
+//                 message:
+//                 'User already exists.'
+//             });
+//         }
+
+
+
+
+
+
+//         // HASH PASSWORD
+
+//         const salt =
+//         await bcrypt.genSalt(10);
+
+//         const hashedPassword =
+//         await bcrypt.hash(password, salt);
+
+
+
+
+
+
+//         // CREATE USER
+
+//         const user =
+//         new User({
+//             name,
+//             email,
+//             password: hashedPassword
+//         });
+
+//         await user.save();
+
+
+
+
+
+
+//         // JWT PAYLOAD
+
+//         const payload = {
+
+//             user: {
+//                 id: user._id,
+//                 name: user.name,
+//                 email: user.email
+//             }
+//         };
+
+
+
+
+
+
+//         // GENERATE TOKEN
+
+//         jwt.sign(
+
+//             payload,
+
+//             process.env.JWT_SECRET,
+
+//             {
+//                 expiresIn: '7d'
+//             },
+
+//             (err, token) => {
+
+//                 if (err) throw err;
+
+//                 res.status(201).json({
+
+//                     message:
+//                     'Account created successfully!',
+
+//                     token,
+
+//                     user: payload.user
+//                 });
+//             }
+
+//         );
+
+//     } catch (err) {
+
+//         console.log(err);
+
+//         res.status(500).json({
+//             message:
+//             'Server error during registration.'
+//         });
+//     }
+// });
+
+
+
+// ===============================
+// REGISTER ROUTE
+// ===============================
+
 app.post('/api/auth/register', async (req, res) => {
-    const { name, email, password } = req.body;
-
-    // Basic validation
-    if (!name || !email || !password) {
-        return res.status(400).json({ message: 'Please enter all fields: name, email, and password.' });
-    }
-    if (password.length < 6) {
-        return res.status(400).json({ message: 'Password must be at least 6 characters long.' });
-    }
 
     try {
-        // Check if user with this email already exists in our in-memory store
-        let userExists = users.find(user => user.email === email);
-        if (userExists) {
-            return res.status(400).json({ message: 'User with this email already exists.' });
-        }
 
-        // Hash the password
-        const salt = await bcrypt.genSalt(10); // Generate a salt
-        const hashedPassword = await bcrypt.hash(password, salt); // Hash the password
-
-        // Create new user object
-        const newUser = {
-            id: nextUserId++, // Assign unique ID
+        const {
             name,
             email,
-            password: hashedPassword // Store the hashed password
-        };
-        users.push(newUser); // Add to in-memory store
+            password
+        } = req.body;
 
-        // Prepare payload for JWT (DO NOT include the hashed password in the payload)
+
+
+
+
+        // REQUIRED FIELDS
+
+        if (!name || !email || !password) {
+
+            return res.status(400).json({
+                message:
+                'Please fill all fields.'
+            });
+        }
+
+
+
+
+
+        // EMAIL VALIDATION
+
+        const emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+
+            return res.status(400).json({
+                message:
+                'Please enter valid email.'
+            });
+        }
+
+
+
+
+
+        // PASSWORD VALIDATION
+
+        const passwordRegex =
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+
+            return res.status(400).json({
+                message:
+                'Password must contain uppercase, number, special character and minimum 8 characters.'
+            });
+        }
+
+
+
+
+
+
+        // CHECK EXISTING USER
+
+        const existingUser =
+        await User.findOne({
+            email
+        });
+
+        if (existingUser) {
+
+            return res.status(400).json({
+                message:
+                'User already exists.'
+            });
+        }
+
+
+
+
+
+
+        // HASH PASSWORD
+
+        const salt =
+        await bcrypt.genSalt(10);
+
+        const hashedPassword =
+        await bcrypt.hash(
+            password,
+            salt
+        );
+
+
+
+
+
+
+        // GENERATE OTP
+
+        const otp =
+        Math.floor(
+            100000 +
+            Math.random() * 900000
+        ).toString();
+
+
+
+
+
+
+        // CREATE USER
+
+        const user =
+        new User({
+
+            name,
+
+            email,
+
+            password:
+            hashedPassword,
+
+            otp,
+
+            otpExpires:
+            Date.now() +
+            5 * 60 * 1000,
+
+            isVerified: false
+        });
+
+
+
+
+
+
+        // SAVE USER
+
+        await user.save();
+
+
+
+
+
+
+        // SEND OTP EMAIL
+
+        await sendEmail(
+
+            user.email,
+
+            'Verify Your Account',
+
+            `Your OTP is: ${otp}`
+
+        );
+
+
+
+
+
+
+        // RESPONSE
+
+        res.status(201).json({
+
+            message:
+            'OTP sent to your email.',
+
+            email:
+            user.email
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+
+            message:
+            'Server error during registration.'
+        });
+    }
+});
+
+
+// ===============================
+// VERIFY OTP ROUTE
+// ===============================
+
+app.post(
+'/api/auth/verify-otp',
+
+async (req, res) => {
+
+    try {
+
+        const {
+            email,
+            otp
+        } = req.body;
+
+
+
+
+
+        // FIND USER
+
+        const user =
+        await User.findOne({
+            email
+        });
+
+
+
+
+
+        if (!user) {
+
+            return res.status(400).json({
+
+                message:
+                'User not found.'
+            });
+        }
+
+
+
+
+
+        // CHECK OTP
+
+        if (user.otp !== otp) {
+
+            return res.status(400).json({
+
+                message:
+                'Invalid OTP.'
+            });
+        }
+
+
+
+
+
+        // CHECK OTP EXPIRY
+
+        if (
+            user.otpExpires <
+            Date.now()
+        ) {
+
+            return res.status(400).json({
+
+                message:
+                'OTP expired.'
+            });
+        }
+
+
+
+
+
+        // VERIFY USER
+
+        user.isVerified = true;
+
+        user.otp = null;
+
+        user.otpExpires = null;
+
+        await user.save();
+
+
+
+
+
+        // JWT PAYLOAD
+
         const payload = {
+
             user: {
-                id: newUser.id,
-                name: newUser.name,
-                email: newUser.email
+
+                id: user._id,
+
+                name: user.name,
+
+                email: user.email
             }
         };
 
-        // Sign the JSON Web Token
+
+
+
+
+        // GENERATE TOKEN
+
         jwt.sign(
+
             payload,
-            JWT_SECRET,
-            { expiresIn: '1h' }, // Token expires in 1 hour
+
+            process.env.JWT_SECRET,
+
+            {
+                expiresIn: '7d'
+            },
+
             (err, token) => {
-                if (err) throw err; // If there's an error signing, throw it
-                res.status(201).json({ // 201 Created status
-                    message: 'Account created successfully!',
-                    token, // Send the token
-                    user: payload.user // Send user data back to frontend for display
+
+                if (err) throw err;
+
+                res.json({
+
+                    message:
+                    'Email verified successfully!',
+
+                    token,
+
+                    user:
+                    payload.user
                 });
             }
+
         );
 
     } catch (err) {
-        // More descriptive error message for internal server errors
-        console.error("Error during user registration:", err.message);
-        res.status(500).json({ message: 'Server error during registration. Please try again.' });
+
+        console.log(err);
+
+        res.status(500).json({
+
+            message:
+            'Server error.'
+        });
     }
 });
 
-// @route   POST /api/auth/login
-// @desc    Authenticate user & get token
-// @access  Public
-app.post('/api/auth/login', async (req, res) => {
-    const { email, password } = req.body;
 
-    // Basic validation
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Please enter both email and password.' });
-    }
+
+// ===============================
+// LOGIN ROUTE
+// ===============================
+
+app.post('/api/auth/login', async (req, res) => {
 
     try {
-        // Find user by email in our in-memory store
-        let user = users.find(u => u.email === email);
+
+        const {
+            email,
+            password
+        } = req.body;
+
+
+
+
+
+        if (!email || !password) {
+
+            return res.status(400).json({
+                message:
+                'Please enter email and password.'
+            });
+        }
+
+
+
+
+
+
+        // FIND USER
+
+        const user =
+        await User.findOne({
+            email
+        });
+
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials.' });
+
+            return res.status(400).json({
+                message:
+                'Invalid credentials.'
+            });
         }
 
-        // Compare provided password with stored hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
+// CHECK IF EMAIL VERIFIED
+
+if (!user.isVerified) {
+
+    return res.status(400).json({
+
+        message:
+        'Please verify your email first.'
+    });
+}
+
+
+
+
+        // PASSWORD CHECK
+
+        const isMatch =
+        await bcrypt.compare(
+            password,
+            user.password
+        );
+
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials.' });
+
+            return res.status(400).json({
+                message:
+                'Invalid credentials.'
+            });
         }
 
-        // Prepare payload for JWT (DO NOT include the hashed password in the payload)
+
+
+
+
+
+        // PAYLOAD
+
         const payload = {
+
             user: {
-                id: user.id,
+                id: user._id,
                 name: user.name,
                 email: user.email
             }
         };
 
-        // Sign the JSON Web Token
+
+
+
+
+
+        // TOKEN
+
         jwt.sign(
+
             payload,
-            JWT_SECRET,
-            { expiresIn: '1h' }, // Token expires in 1 hour
+
+            process.env.JWT_SECRET,
+
+            {
+                expiresIn: '7d'
+            },
+
             (err, token) => {
+
                 if (err) throw err;
-                res.json({ // 200 OK status is default for res.json
-                    message: 'Logged in successfully!',
-                    token, // Send the token
-                    user: payload.user // Send user data back to frontend for display
+
+                res.json({
+
+                    message:
+                    'Login successful!',
+
+                    token,
+
+                    user: payload.user
                 });
             }
+
         );
 
     } catch (err) {
-        // More descriptive error message for internal server errors
-        console.error("Error during user login:", err.message);
-        res.status(500).json({ message: 'Server error during login. Please try again.' });
+
+        console.log(err);
+
+        res.status(500).json({
+            message:
+            'Server error during login.'
+        });
     }
 });
 
-// ===========================================
-//  IDEA ROUTES (/api/ideas/...)
-// ===========================================
-// Import the idea routes and authentication middleware
-const ideaRoutes = require('./routes/ideaRoutes');
-// const auth = require('./middleware/authMiddleware'); // Uncomment if you create this middleware
 
-// Mount the idea routes.
-// Currently, all idea routes are public as per your frontend's interaction.
-// If you wanted to protect specific routes (e.g., only logged-in users can submit):
-// app.use('/api/ideas', auth, ideaRoutes); // This would protect all routes in ideaRoutes
-// Or protect specific routes within ideaRoutes:
-// router.post('/submit', auth, async (req, res) => { ... });
+
+
+
+
+// ===============================
+// IDEA ROUTES
+// ===============================
+
 app.use('/api/ideas', ideaRoutes);
 
 
-// Start the server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+
+
+// ===============================
+// START SERVER
+// ===============================
+
+app.listen(PORT, () => {
+
+    console.log(
+        `Server running on port ${PORT}`
+    );
+});
