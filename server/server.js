@@ -49,13 +49,23 @@ app.use(cors({
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
+
     console.log('MongoDB connected successfully!');
+
+    console.log(
+        'Connected DB:',
+        mongoose.connection.name
+    );
+
 })
 .catch((err) => {
-    console.log(err);
+
+    console.log(
+        'MongoDB Error:',
+        err
+    );
+
 });
-
-
 
 
 
