@@ -229,56 +229,80 @@ app.post('/api/auth/register', async (req, res) => {
 
         // SAVE USER
 
-        await user.save();
+//         await user.save();
 
 
 
 
 
 
-        // SEND OTP EMAIL
+     
 
-        // await sendEmail(
+// res.status(201).json({
 
-        //     user.email,
+//     success: true,
 
-        //     'Verify Your Account',
+//     message:
+//     'User created successfully.',
 
-        //     `Your OTP is: ${otp}`
+//     email:
+//     user.email,
 
-        // );
+//     otp
 
+// });
+// SAVE USER
 
+await user.save();
 
+try {
 
+    await sendEmail(
 
+        user.email,
 
-        // RESPONSE
+        'Verify Your Account',
 
-        // res.status(201).json({
+        `Your OTP is: ${otp}
 
-        //     message:
-        //     'OTP sent to your email.',
+This OTP expires in 5 minutes.`
 
-        //     email:
-        //     user.email
-        // });
+    );
 
-        // TEMPORARY TEST MODE
+    return res.status(201).json({
 
-res.status(201).json({
+        success: true,
 
-    success: true,
+        message:
+        'OTP sent successfully.',
 
-    message:
-    'User created successfully.',
+        email:
+        user.email
 
-    email:
-    user.email,
+    });
 
-    otp
+} catch (emailError) {
 
-});
+    console.error(
+        'EMAIL ERROR:',
+        emailError
+    );
+
+    return res.status(201).json({
+
+        success: true,
+
+        message:
+        'Account created but email failed.',
+
+        email:
+        user.email,
+
+        otp
+
+    });
+
+}
 
     } catch (err) {
 
