@@ -34,10 +34,25 @@ const sendEmail = async (to, subject, text) => {
 
     } catch (err) {
 
-        console.error(err.response?.data || err.message);
+    console.error('========== BREVO ERROR ==========');
 
-        throw err;
-    }
+    console.error('STATUS:',
+        err.response?.status);
+
+    console.error('DATA:',
+        err.response?.data);
+
+    console.error('MESSAGE:',
+        err.message);
+
+    console.error('===============================');
+
+    throw new Error(
+        JSON.stringify(
+            err.response?.data || err.message
+        )
+    );
+}
 };
 
 module.exports = sendEmail;
