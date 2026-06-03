@@ -283,23 +283,14 @@ This OTP expires in 5 minutes.`
 
 } catch (emailError) {
 
-    console.error(
-        'EMAIL ERROR:',
-        emailError
-    );
+    console.error('====================');
+    console.error('EMAIL ERROR FULL');
+    console.error(emailError);
+    console.error('====================');
 
-    return res.status(201).json({
-
-        success: true,
-
-        message:
-        'Account created but email failed.',
-
-        email:
-        user.email,
-
-        otp
-
+    return res.status(500).json({
+        success: false,
+        message: emailError.message
     });
 
 }
