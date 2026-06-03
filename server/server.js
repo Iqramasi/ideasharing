@@ -272,14 +272,19 @@ res.status(201).json({
 
     } catch (err) {
 
-        console.log(err);
+    console.error(
+        'REGISTER ERROR:'
+    );
 
-        res.status(500).json({
+    console.error(err);
 
-            message:
-            'Server error during registration.'
-        });
-    }
+    res.status(500).json({
+
+        message:
+        err.message
+
+    });
+}
 });
 
 
