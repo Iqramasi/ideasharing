@@ -4,11 +4,18 @@ const sendEmail = async (to, subject, text) => {
 
     const transporter = nodemailer.createTransport({
 
-        service: 'gmail',
+        host: 'smtp-relay.brevo.com',
+
+        port: 587,
+
+        secure: false,
 
         auth: {
+
             user: process.env.EMAIL_USER,
+
             pass: process.env.EMAIL_PASS
+
         }
 
     });
@@ -18,19 +25,28 @@ const sendEmail = async (to, subject, text) => {
         const info = await transporter.sendMail({
 
             from: process.env.EMAIL_USER,
+
             to,
+
             subject,
+
             text
 
         });
 
-        console.log('Email sent:', info.response);
+        console.log(
+            'Email sent:',
+            info.response
+        );
 
         return true;
 
     } catch (err) {
 
-        console.error('EMAIL FAILED:', err);
+        console.error(
+            'BREVO EMAIL ERROR:',
+            err
+        );
 
         throw err;
     }
