@@ -13,6 +13,10 @@ const sendEmail = async (to, subject, text) => {
 
         secure: false,
 
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
+
         auth: {
 
             user: process.env.EMAIL_USER,
@@ -25,15 +29,10 @@ const sendEmail = async (to, subject, text) => {
 
     try {
 
-        console.log('Verifying SMTP connection...');
-
-        await transporter.verify();
-
-        console.log('SMTP VERIFIED');
+        console.log('Sending email directly...');
 
         const info = await transporter.sendMail({
 
-            // IMPORTANT CHANGE HERE
             from: 'iqramasi121@gmail.com',
 
             to,
