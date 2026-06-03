@@ -283,3 +283,16 @@
 
     
 }
+.delete-btn {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border: 3px solid black;
+    background: #ffb3b3;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    transform: translateY(-2px);
+}

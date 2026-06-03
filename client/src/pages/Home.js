@@ -1,98 +1,228 @@
-
-
-import React, { useState, useEffect } from "react"; // Import useState and useEffect
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './Home.css'; // Assuming you have existing Home.css
+import './Home.css';
 
 const Home = () => {
-  const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown visibility
-  const [user, setUser] = useState(null); // State to store user data
 
-  // Load user data from localStorage when the component mounts
+  const navigate = useNavigate();
+
+  const [dropdownOpen, setDropdownOpen] =
+    useState(false);
+
+  const [user, setUser] =
+    useState(null);
+
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+
+    const storedUser =
+      localStorage.getItem('user');
+
     if (storedUser) {
+
       try {
-        setUser(JSON.parse(storedUser));
+
+        const parsedUser =
+          JSON.parse(storedUser);
+
+        setUser(parsedUser);
+
       } catch (e) {
-        console.error("Failed to parse user data from localStorage", e);
-        localStorage.removeItem('user'); // Clear corrupted data
-        localStorage.removeItem('token'); // Clear corrupted token
-        navigate('/'); // Redirect to login
-      }
-    } else {
-        // If no user data, navigate to login page
+
+        console.error(
+          "Failed to parse user data",
+          e
+        );
+
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+
         navigate('/');
+
+      }
+
+    } else {
+
+      navigate('/');
+
     }
+
   }, [navigate]);
 
-  const goToForm = () => {
-    navigate("/submit");
-  };
-
-  // Function to toggle dropdown visibility
   const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+
+    setDropdownOpen(
+      !dropdownOpen
+    );
+
   };
 
-  // Function to handle navigation from dropdown
   const handleNavigation = (path) => {
+
     navigate(path);
-    setDropdownOpen(false); // Close dropdown after navigation
+
+    setDropdownOpen(false);
+
   };
 
-  // Handle Logout
+  const goToForm = () => {
+
+    navigate('/submit');
+
+  };
+
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token
-    localStorage.removeItem('user');  // Remove user data
-    setUser(null); // Clear user state
-    navigate('/'); // Redirect to AuthPage (login/signup)
+
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userId');
+
+    navigate('/');
+
   };
 
   if (!user) {
-    // Optionally render a loading state or nothing while redirecting
-    return <div className="home-loading">Redirecting to login...</div>;
+
+    return (
+      <div className="home-loading">
+        Loading...
+      </div>
+    );
+
   }
 
   return (
+
     <div className="home-container">
-      {/* Dropdown Menu - Added Here */}
+
+      {/* MENU */}
+
       <div className="dropdown-menu-container">
-        <div className="hamburger-icon" onClick={toggleDropdown}>
+
+        <div
+          className="hamburger-icon"
+          onClick={toggleDropdown}
+        >
+
           <div className="bar"></div>
           <div className="bar"></div>
           <div className="bar"></div>
+
         </div>
+
         {dropdownOpen && (
+
           <div className="dropdown-content">
-            <button onClick={() => handleNavigation("/interest")}>Show Interest</button>
-            <button onClick={() => handleNavigation("/submit")}>Submit Idea</button>
-            {/* <button onClick={() => handleNavigation("/contact")}>Contact Us</button> */}
-            <button onClick={handleLogout} className="logout-button">Logout</button> {/* Added Logout Button */}
+
+            <button
+              onClick={() =>
+                handleNavigation('/interest')
+              }
+            >
+              Show Interest
+            </button>
+
+            <button
+              onClick={() =>
+                handleNavigation('/my-ideas')
+              }
+            >
+              My Ideas
+            </button>
+
+            <button
+              onClick={() =>
+                handleNavigation('/submit')
+              }
+            >
+              Submit Idea
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="logout-button"
+            >
+              Logout
+            </button>
+
           </div>
+
         )}
+
       </div>
-      {/* End Dropdown Menu */}
+
+      {/* MAIN */}
 
       <div className="content">
-        <h1 className="home-title">Share Your Idea</h1>
-        {/* Display user name */}
-        {user && <p className="welcome-message">Welcome, {user.name}!</p>}
-        <button className="home-button" onClick={goToForm}>Submit Your Idea</button>
+
+        <h1 className="home-title">
+          Share Your Idea
+        </h1>
+
+        <p className="welcome-message">
+          Welcome, {user.name}!
+        </p>
+
+        <button
+          className="home-button"
+          onClick={goToForm}
+        >
+          Submit Your Idea
+        </button>
+
       </div>
 
+      {/* FOOTER CHARACTERS */}
+
       <footer className="bear-footer">
-        <img src="/bears/bear6.png" alt="bear11" className="bear-img" />
-        <img src="/bears/bear7.png" alt="bear12" className="bear-img" />
-        <img src="/bears/bear8.png" alt="bear9" className="bear-img" />
-        <img src="/bears/bear9.png" alt="bear7" className="bear-img" />
-        <img src="/bears/bear10.png" alt="bear8" className="bear-img" />
-        <img src="/bears/bear11.png" alt="bear6" className="bear-img" />
-        <img src="/bears/bear12.png" alt="bear10" className="bear-img" />
-        <img src="/bears/bear11.png" alt="bear9" className="bear-img" />
+
+        <img
+          src="/bears/bear6.png"
+          alt="bear6"
+          className="bear-img"
+        />
+
+        <img
+          src="/bears/bear7.png"
+          alt="bear7"
+          className="bear-img"
+        />
+
+        <img
+          src="/bears/bear8.png"
+          alt="bear8"
+          className="bear-img"
+        />
+
+        <img
+          src="/bears/bear9.png"
+          alt="bear9"
+          className="bear-img"
+        />
+
+        <img
+          src="/bears/bear10.png"
+          alt="bear10"
+          className="bear-img"
+        />
+
+        <img
+          src="/bears/bear11.png"
+          alt="bear11"
+          className="bear-img"
+        />
+
+        <img
+          src="/bears/bear12.png"
+          alt="bear12"
+          className="bear-img"
+        />
+
       </footer>
+
     </div>
+
   );
 };
 

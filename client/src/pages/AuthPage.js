@@ -1,5 +1,3 @@
-// client/src/pages/AuthPage.js
-
 import React, {
     useState
 } from 'react';
@@ -12,62 +10,34 @@ import {
 
 import './AuthPage.css';
 
-
-
-
-
 function AuthPage() {
 
     const [isLogin, setIsLogin] =
-    useState(true);
-
-
-
-
+        useState(true);
 
     const [formData, setFormData] =
-    useState({
-
-        name: '',
-
-        email: '',
-
-        password: ''
-    });
-
-
-
-
+        useState({
+            name: '',
+            email: '',
+            password: ''
+        });
 
     const [loading, setLoading] =
-    useState(false);
+        useState(false);
 
     const [error, setError] =
-    useState(null);
+        useState(null);
 
     const [successMessage,
         setSuccessMessage
     ] = useState(null);
 
-
-
-
-
     const navigate =
-    useNavigate();
-
-
-
-
+        useNavigate();
 
     const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL ||
-
-    'http://localhost:5000';
-
-
-
-
+        process.env.REACT_APP_API_BASE_URL ||
+        'http://localhost:5000';
 
     const handleChange = (e) => {
 
@@ -76,176 +46,147 @@ function AuthPage() {
             ...formData,
 
             [e.target.name]:
-            e.target.value
+                e.target.value
+
         });
+
     };
-
-
-
-
 
     const handleSubmit =
-    async (e) => {
+        async (e) => {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        setLoading(true);
+            setLoading(true);
 
-        setError(null);
+            setError(null);
 
-        setSuccessMessage(null);
+            setSuccessMessage(null);
 
+            const url = isLogin
 
+                ? `${API_BASE_URL}/api/auth/login`
 
+                : `${API_BASE_URL}/api/auth/register`;
 
+            try {
 
-        const url = isLogin
-
-            ? `${API_BASE_URL}/api/auth/login`
-
-            : `${API_BASE_URL}/api/auth/register`;
-
-
-
-
-
-        try {
-
-            const res =
-            await axios.post(
-                url,
-                formData
-            );
-
-
-
-
-
-            // LOGIN FLOW
-
-            if (isLogin) {
-
-                localStorage.setItem(
-
-                    'token',
-
-                    res.data.token
-                );
-
-
-
-
-
-                localStorage.setItem(
-
-                    'user',
-
-                    JSON.stringify(
-                        res.data.user
-                    )
-                );
-
-
-
-
-
-                setSuccessMessage(
-                    res.data.message
-                );
-
-
-
-
-
-                setTimeout(() => {
-
-                    navigate('/home', {
-
-                        state: {
-                            authSuccess: true
-                        }
-                    });
-
-                }, 1500);
-
-            }
-
-
-
-
-
-
-            // SIGNUP FLOW
-
-            else {
-
-                setSuccessMessage(
-                    res.data.message
-                );
-
-
-
-
-
-                setTimeout(() => {
-
-                    navigate(
-
-                        '/verify-otp',
-
-                        {
-                            state: {
-
-                                email:
-                                res.data.email
-                            }
-                        }
-
+                const res =
+                    await axios.post(
+                        url,
+                        formData
                     );
 
-                }, 1500);
+                /*
+                =====================================
+                LOGIN
+                =====================================
+                */
+
+                if (isLogin) {
+
+                    localStorage.setItem(
+                        'token',
+                        res.data.token
+                    );
+
+                    localStorage.setItem(
+                        'user',
+                        JSON.stringify(
+                            res.data.user
+                        )
+                    );
+
+                    localStorage.setItem(
+                        'name',
+                        res.data.user.name
+                    );
+
+                    localStorage.setItem(
+                        'email',
+                        res.data.user.email
+                    );
+
+                    localStorage.setItem(
+                        'userId',
+                        res.data.user._id
+                    );
+
+                    setSuccessMessage(
+                        res.data.message ||
+                        'Login successful'
+                    );
+
+                    setTimeout(() => {
+
+                        navigate(
+                            '/home',
+                            {
+                                state: {
+                                    authSuccess: true
+                                }
+                            }
+                        );
+
+                    }, 1000);
+
+                }
+
+                /*
+                =====================================
+                REGISTER
+                =====================================
+                */
+
+                else {
+
+                    setSuccessMessage(
+                        res.data.message ||
+                        'OTP sent successfully'
+                    );
+
+                    setTimeout(() => {
+
+                        navigate(
+                            '/verify-otp',
+                            {
+                                state: {
+                                    email:
+                                        res.data.email
+                                }
+                            }
+                        );
+
+                    }, 1000);
+
+                }
+
+            } catch (err) {
+
+                console.error(
+                    "Auth Error:",
+                    err.response?.data?.message ||
+                    err.message
+                );
+
+                setError(
+                    err.response?.data?.message ||
+                    'Authentication failed'
+                );
+
+            } finally {
+
+                setLoading(false);
+
             }
 
-        } catch (err) {
-
-            console.error(
-
-                "Auth error:",
-
-                err.response?.data?.message ||
-
-                err.message
-            );
-
-
-
-
-
-            setError(
-
-                err.response?.data?.message ||
-
-                'Authentication failed.'
-            );
-
-        } finally {
-
-            setLoading(false);
-        }
-    };
-
-
-
-
+        };
 
     return (
 
         <div className="auth-page-container">
 
             <div className="auth-card">
-
-
-
 
                 <div className="auth-header">
 
@@ -255,70 +196,65 @@ function AuthPage() {
 
                     <p>
 
-                        {isLogin
+                        {
 
-                            ? 'Log in to check out ideas'
+                            isLogin
 
-                            : 'Create your account'
+                                ? 'Log in to explore ideas'
+
+                                : 'Create your account'
+
                         }
 
                     </p>
 
                 </div>
 
-
-
-
-
                 <form
 
                     onSubmit={handleSubmit}
 
                     className="auth-form"
+
                 >
 
+                    {
 
+                        !isLogin && (
 
+                            <div className="form-group">
 
+                                <label>
+                                    Name
+                                </label>
 
-                    {!isLogin && (
+                                <input
 
-                        <div className="form-group">
+                                    type="text"
 
-                            <label htmlFor="name">
-                                Name
-                            </label>
+                                    name="name"
 
-                            <input
+                                    placeholder="Your Name"
 
-                                type="text"
+                                    value={formData.name}
 
-                                id="name"
+                                    onChange={handleChange}
 
-                                name="name"
+                                    required
 
-                                placeholder="Your Name"
+                                    disabled={loading}
 
-                                value={formData.name}
+                                />
 
-                                onChange={handleChange}
+                            </div>
 
-                                required={!isLogin}
+                        )
 
-                                disabled={loading}
-                            />
-
-                        </div>
-                    )}
-
-
-
-
-
+                    }
 
                     <div className="form-group">
 
-                        <label htmlFor="email">
+                        <label>
                             Email
                         </label>
 
@@ -326,11 +262,9 @@ function AuthPage() {
 
                             type="email"
 
-                            id="email"
-
                             name="email"
 
-                            placeholder="bear@gmail.com"
+                            placeholder="your@email.com"
 
                             value={formData.email}
 
@@ -339,26 +273,20 @@ function AuthPage() {
                             required
 
                             disabled={loading}
+
                         />
 
                     </div>
 
-
-
-
-
-
                     <div className="form-group">
 
-                        <label htmlFor="password">
+                        <label>
                             Password
                         </label>
 
                         <input
 
                             type="password"
-
-                            id="password"
 
                             name="password"
 
@@ -370,44 +298,41 @@ function AuthPage() {
 
                             required
 
-                            minLength={8}
+                            minLength={6}
 
                             disabled={loading}
+
                         />
 
                     </div>
 
+                    {
 
+                        error && (
 
+                            <p className="error-message">
 
+                                {error}
 
+                            </p>
 
-                    {error && (
+                        )
 
-                        <p className="error-message">
+                    }
 
-                            {error}
+                    {
 
-                        </p>
-                    )}
+                        successMessage && (
 
+                            <p className="success-message">
 
+                                {successMessage}
 
+                            </p>
 
+                        )
 
-                    {successMessage && (
-
-                        <p className="success-message">
-
-                            {successMessage}
-
-                        </p>
-                    )}
-
-
-
-
-
+                    }
 
                     <button
 
@@ -416,122 +341,110 @@ function AuthPage() {
                         className="auth-button"
 
                         disabled={loading}
+
                     >
 
-                        {loading
+                        {
 
-                            ? 'Processing...'
+                            loading
 
-                            : (
+                                ? 'Processing...'
 
-                                isLogin
+                                : isLogin
 
-                                    ? 'LOGIN WITH EMAIL'
+                                    ? 'LOGIN'
 
                                     : 'SIGN UP'
-                            )
+
                         }
 
                     </button>
 
+                    <div
+                        className="auth-footer-links"
+                    >
 
+                        {
 
+                            isLogin
 
+                                ? (
 
+                                    <p>
 
-                    <div className="auth-footer-links">
+                                        Don't have an account?
 
+                                        <button
 
+                                            type="button"
 
+                                            onClick={() => {
 
-                        {isLogin ? (
+                                                setIsLogin(false);
 
-                            <p>
+                                                setError(null);
 
-                                Don't have an account?
+                                                setSuccessMessage(null);
 
+                                            }}
 
+                                            style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                color: '#00bfff',
+                                                cursor: 'pointer',
+                                                marginLeft: '5px'
+                                            }}
 
+                                        >
 
+                                            Sign Up
 
+                                        </button>
 
-                                <button
+                                    </p>
 
-                                    type="button"
+                                )
 
-                                    onClick={() => {
+                                : (
 
-                                        setIsLogin(false);
+                                    <p>
 
-                                        setError(null);
+                                        Already have an account?
 
-                                        setSuccessMessage(null);
-                                    }}
+                                        <button
 
-                                    style={{
+                                            type="button"
 
-                                        background: 'none',
+                                            onClick={() => {
 
-                                        border: 'none',
+                                                setIsLogin(true);
 
-                                        color: '#00bfff',
+                                                setError(null);
 
-                                        cursor: 'pointer',
+                                                setSuccessMessage(null);
 
-                                        marginLeft: '5px'
-                                    }}
-                                >
+                                            }}
 
-                                    Sign Up
+                                            style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                color: '#00bfff',
+                                                cursor: 'pointer',
+                                                marginLeft: '5px'
+                                            }}
 
-                                </button>
+                                        >
 
-                            </p>
+                                            Login
 
-                        ) : (
+                                        </button>
 
-                            <p>
+                                    </p>
 
-                                Already have an account?
+                                )
 
-
-
-
-
-
-                                <button
-
-                                    type="button"
-
-                                    onClick={() => {
-
-                                        setIsLogin(true);
-
-                                        setError(null);
-
-                                        setSuccessMessage(null);
-                                    }}
-
-                                    style={{
-
-                                        background: 'none',
-
-                                        border: 'none',
-
-                                        color: '#00bfff',
-
-                                        cursor: 'pointer',
-
-                                        marginLeft: '5px'
-                                    }}
-                                >
-
-                                    Log In
-
-                                </button>
-
-                            </p>
-                        )}
+                        }
 
                     </div>
 
@@ -540,7 +453,9 @@ function AuthPage() {
             </div>
 
         </div>
+
     );
+
 }
 
 export default AuthPage;

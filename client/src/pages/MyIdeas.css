@@ -1,0 +1,57 @@
+.top-back-arrow {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    font-family: 'Press Start 2P', cursive;
+    color: #000;
+    cursor: pointer;
+    z-index: 1000;
+    line-height: 1;
+}
+
+.top-back-arrow:hover {
+    transform: scale(1.1);
+}
+
+.idea-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.small-action-btn {
+    background-color: #6f7a86;
+    color: white;
+    border: 3px solid #000;
+
+    font-family: 'Press Start 2P', cursive;
+    font-size: 8px;
+
+    width: 90px;      /* same width */
+    height: 34px;     /* same height */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    box-shadow: 3px 3px 0px #000;
+    transition: all 0.1s ease;
+
+    padding: 0;
+}
+
+.small-action-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px #000;
+}
+
+.delete-btn {
+    background-color: #6f7a86;
+}

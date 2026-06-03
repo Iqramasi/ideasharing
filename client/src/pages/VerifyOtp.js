@@ -9,169 +9,130 @@ import {
     useLocation
 } from 'react-router-dom';
 
-
-
-
-
 const VerifyOtp = () => {
 
     const navigate =
-    useNavigate();
+        useNavigate();
 
     const location =
-    useLocation();
-
-
-
-
+        useLocation();
 
     const email =
-    location.state?.email || '';
-
-
-
-
+        location.state?.email || '';
 
     const [otp, setOtp] =
-    useState('');
+        useState('');
 
     const [error, setError] =
-    useState('');
+        useState('');
 
     const [loading, setLoading] =
-    useState(false);
-
-
-
-
+        useState(false);
 
     const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL ||
-    'http://localhost:5000';
-
-
-
-
+        process.env.REACT_APP_API_BASE_URL ||
+        'http://localhost:5000';
 
     const handleVerify =
-    async (e) => {
+        async (e) => {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        setLoading(true);
+            setLoading(true);
 
-        setError('');
+            setError('');
 
+            try {
 
+                const res =
+                    await axios.post(
 
+                        `${API_BASE_URL}/api/auth/verify-otp`,
 
+                        {
+                            email,
+                            otp
+                        }
 
-        try {
+                    );
 
-            const res =
-            await axios.post(
+                // Store auth data
 
-                `${API_BASE_URL}/api/auth/verify-otp`,
+                localStorage.setItem(
+                    'token',
+                    res.data.token
+                );
 
-                {
-                    email,
-                    otp
-                }
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify(
+                        res.data.user
+                    )
+                );
 
-            );
+                // Store user details separately
 
+                localStorage.setItem(
+                    'userId',
+                    res.data.user._id
+                );
 
+                localStorage.setItem(
+                    'name',
+                    res.data.user.name
+                );
 
+                localStorage.setItem(
+                    'email',
+                    res.data.user.email
+                );
 
+                navigate('/home');
 
-            localStorage.setItem(
-                'token',
-                res.data.token
-            );
+            } catch (err) {
 
+                setError(
 
+                    err.response?.data?.message ||
 
+                    'OTP verification failed.'
 
+                );
 
-            localStorage.setItem(
+            } finally {
 
-                'user',
+                setLoading(false);
 
-                JSON.stringify(
-                    res.data.user
-                )
-            );
+            }
 
-
-
-
-
-            navigate('/home');
-
-        } catch (err) {
-
-            setError(
-
-                err.response?.data?.message ||
-
-                'OTP verification failed.'
-            );
-
-        } finally {
-
-            setLoading(false);
-        }
-    };
-
-
-
-
+        };
 
     return (
 
-        <div style={{
-
-            display: 'flex',
-
-            justifyContent: 'center',
-
-            alignItems: 'center',
-
-            height: '100vh',
-
-            background: '#111',
-
-            color: '#fff'
-        }}>
-
-
-
-
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                background: '#111',
+                color: '#fff'
+            }}
+        >
 
             <form
                 onSubmit={handleVerify}
                 style={{
-
                     background: '#222',
-
                     padding: '30px',
-
                     borderRadius: '10px',
-
                     width: '350px'
                 }}
             >
 
-
-
-
                 <h2>
                     Verify OTP
                 </h2>
-
-
-
-
 
                 <p>
                     OTP sent to:
@@ -180,10 +141,6 @@ const VerifyOtp = () => {
                         {email}
                     </strong>
                 </p>
-
-
-
-
 
                 <input
 
@@ -202,33 +159,29 @@ const VerifyOtp = () => {
                     required
 
                     style={{
-
                         width: '100%',
-
                         padding: '10px',
-
                         marginTop: '15px',
-
                         marginBottom: '15px'
                     }}
+
                 />
 
+                {
 
+                    error && (
 
+                        <p
+                            style={{
+                                color: 'red'
+                            }}
+                        >
+                            {error}
+                        </p>
 
+                    )
 
-                {error && (
-
-                    <p style={{
-                        color: 'red'
-                    }}>
-                        {error}
-                    </p>
-                )}
-
-
-
-
+                }
 
                 <button
 
@@ -237,18 +190,21 @@ const VerifyOtp = () => {
                     disabled={loading}
 
                     style={{
-
                         width: '100%',
-
                         padding: '10px',
-
                         cursor: 'pointer'
                     }}
+
                 >
 
-                    {loading
-                        ? 'Verifying...'
-                        : 'Verify OTP'
+                    {
+
+                        loading
+
+                            ? 'Verifying...'
+
+                            : 'Verify OTP'
+
                     }
 
                 </button>
@@ -256,7 +212,9 @@ const VerifyOtp = () => {
             </form>
 
         </div>
+
     );
+
 };
 
 export default VerifyOtp;

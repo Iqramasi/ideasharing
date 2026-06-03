@@ -8,38 +8,22 @@ import {
 } from 'react-router-dom';
 
 import SubmitIdea from './pages/SubmitIdea';
-
 import ViewIdea from './pages/ViewIdea';
-
-import Home from "./pages/Home";
-
+import Home from './pages/Home';
 import IdeaList from './pages/IdeaList';
-
+import MyIdeas from './pages/MyIdeas';
 import AuthPage from './pages/AuthPage';
-
 import VerifyOtp from './pages/VerifyOtp';
 
-
-
-
-
-// PRIVATE ROUTE
-
-const PrivateRoute = ({
-  children
-}) => {
+const PrivateRoute = ({ children }) => {
 
   const isAuthenticated =
-  localStorage.getItem('token');
+    localStorage.getItem('token');
 
   return isAuthenticated
     ? children
     : <Navigate to="/" replace />;
 };
-
-
-
-
 
 function App() {
 
@@ -49,122 +33,79 @@ function App() {
 
       <Routes>
 
-
-
-
-
-        {/* AUTH PAGE */}
+        {/* AUTH */}
 
         <Route
-
           path="/"
-
           element={<AuthPage />}
         />
 
-
-
-
-
-        {/* VERIFY OTP */}
+        {/* OTP */}
 
         <Route
-
           path="/verify-otp"
-
           element={<VerifyOtp />}
         />
-
-
-
-
 
         {/* HOME */}
 
         <Route
-
           path="/home"
-
           element={
-
             <PrivateRoute>
-
               <Home />
-
             </PrivateRoute>
           }
         />
 
-
-
-
-
-        {/* SUBMIT */}
+        {/* SUBMIT IDEA */}
 
         <Route
-
           path="/submit"
-
           element={
-
             <PrivateRoute>
-
               <SubmitIdea />
-
             </PrivateRoute>
           }
         />
 
-
-
-
-
-        {/* INTEREST */}
+        {/* SHOW INTEREST */}
 
         <Route
-
           path="/interest"
-
           element={
-
             <PrivateRoute>
-
               <IdeaList />
-
             </PrivateRoute>
           }
         />
 
+        {/* MY IDEAS */}
 
-
-
+        <Route
+          path="/my-ideas"
+          element={
+            <PrivateRoute>
+              <MyIdeas />
+            </PrivateRoute>
+          }
+        />
 
         {/* VIEW IDEA */}
 
         <Route
-
           path="/ideas/:id"
-
           element={
-
             <PrivateRoute>
-
               <ViewIdea />
-
             </PrivateRoute>
           }
         />
 
-
-
-
-
         {/* FALLBACK */}
 
         <Route
-
           path="*"
-
           element={
             <Navigate
               to="/"
@@ -176,6 +117,7 @@ function App() {
       </Routes>
 
     </Router>
+
   );
 }
 
