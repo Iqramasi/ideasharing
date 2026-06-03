@@ -228,15 +228,15 @@ app.post('/api/auth/register', async (req, res) => {
 
         // SEND OTP EMAIL
 
-        await sendEmail(
+        // await sendEmail(
 
-            user.email,
+        //     user.email,
 
-            'Verify Your Account',
+        //     'Verify Your Account',
 
-            `Your OTP is: ${otp}`
+        //     `Your OTP is: ${otp}`
 
-        );
+        // );
 
 
 
@@ -245,14 +245,30 @@ app.post('/api/auth/register', async (req, res) => {
 
         // RESPONSE
 
-        res.status(201).json({
+        // res.status(201).json({
 
-            message:
-            'OTP sent to your email.',
+        //     message:
+        //     'OTP sent to your email.',
 
-            email:
-            user.email
-        });
+        //     email:
+        //     user.email
+        // });
+
+        // TEMPORARY TEST MODE
+
+res.status(201).json({
+
+    success: true,
+
+    message:
+    'User created successfully.',
+
+    email:
+    user.email,
+
+    otp
+
+});
 
     } catch (err) {
 
