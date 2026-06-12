@@ -1,3 +1,4 @@
+                                                 https://ideasharing-flaq.vercel.app
 # 💡 Idea Sharing Platform
 
 A full-stack web application that enables users to share innovative ideas, generate QR codes for easy access, and connect with people interested in collaborating on those ideas.
